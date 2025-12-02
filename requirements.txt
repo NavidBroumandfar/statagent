@@ -5,3 +5,7 @@ pandas>=1.3.0
 jupyter>=1.0.0
 notebook>=6.4.0
 
+# Agent dependencies (for autonomous analysis)
+openai>=1.0.0  # For GPT-4 and GPT-3.5 Turbo
+ollama>=0.1.0  # For local LLM support (optional)
+

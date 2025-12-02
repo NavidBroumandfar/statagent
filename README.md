@@ -1,12 +1,36 @@
 # StatAgent
 
-> An intelligent statistical analysis toolkit for probabilistic modeling, hypothesis testing, and Bayesian inference.
+> An intelligent statistical analysis toolkit with **autonomous agent capabilities** for probabilistic modeling, hypothesis testing, and Bayesian inference.
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 **StatAgent** is a comprehensive Python package for advanced statistical analysis, combining classical and Bayesian methods with modern software engineering practices. Built from real-world statistical problems, it provides clean APIs for distribution analysis, parameter estimation, hypothesis testing, and regression modeling.
+
+## NEW: Autonomous Agent (Phase 2)
+
+StatAgent now includes an **autonomous agent layer** that can:
+- **Examine data** and understand its characteristics automatically
+- **Reason** about appropriate statistical methods using LLMs
+- **Execute** analyses with minimal user configuration
+- **Interpret** results in plain language
+- **Recommend** next steps for deeper analysis
+
+Quick Example:
+```python
+from statagent import StatisticalAgent
+
+# Agent autonomously analyzes your data
+agent = StatisticalAgent(llm="gpt-4", verbose=True)
+report = agent.analyze(data, goal="understand_distribution")
+
+# Agent decides: "Data appears discrete with overdispersion,
+# trying Negative Binomial model..."
+print(report.summary())
+```
+
+See [Agent Architecture](docs/AGENT_ARCHITECTURE.md) for details.
 
 ## Features
 
@@ -164,10 +188,97 @@ print(model.summary(X, y))
 model.plot_fit(X, y, save_path="regression_fit.png")
 ```
 
+### Autonomous Agent (NEW)
+
+The StatisticalAgent autonomously analyzes data with minimal configuration:
+
+```python
+from statagent import StatisticalAgent
+import numpy as np
+
+# Create agent (supports GPT-4, GPT-3.5, or local Ollama)
+agent = StatisticalAgent(
+    llm="gpt-4",  # or "gpt-3.5-turbo" or "ollama/llama3"
+    verbose=True,  # Show reasoning process
+    use_llm=True   # Set False for rule-based mode (no API key needed)
+)
+
+# Example 1: Count data - agent detects overdispersion
+count_data = np.random.negative_binomial(n=10, p=0.3, size=100)
+report = agent.analyze(count_data, goal="understand_distribution")
+
+# Agent autonomously:
+# 1. Examines data (finds discrete count type)
+# 2. Detects overdispersion (variance > mean)
+# 3. Selects Negative Binomial model
+# 4. Estimates parameters
+# 5. Interprets results
+
+print(report.summary())
+# Output: Distribution analysis, parameter estimates, recommendations
+
+# Example 2: Hypothesis testing
+response_times = np.random.normal(loc=1050, scale=50, size=30)
+report = agent.analyze(
+    response_times,
+    goal="test_hypothesis",
+    hypothesis="mean > 1000"
+)
+
+# Agent selects Z-test, executes, and interprets
+print(report.summary())
+
+# Example 3: Access specific results
+ztest_result = report.get_method_result("ZTest")
+if ztest_result:
+    print(f"P-value: {ztest_result['output']['p_value']:.6f}")
+    print(f"Reject null: {ztest_result['output']['reject_null']}")
+
+# Example 4: View agent's reasoning
+reasoning = agent.explain_reasoning()
+print(reasoning)  # See LLM's decision-making process
+```
+
+Agent Features:
+- **Intelligent**: Uses LLMs (GPT-4, Ollama) for reasoning
+- **Automatic**: Detects data type, selects methods
+- **Comprehensive**: Examines, analyzes, interprets
+- **Explainable**: Shows reasoning at every step
+- **Robust**: Fallback to rule-based mode if LLM unavailable
+- **Goal-oriented**: Supports various analysis objectives
+
+**Analysis Goals:**
+- `"understand_distribution"` - Identify and analyze distribution
+- `"test_hypothesis"` - Perform hypothesis testing
+- `"estimate_parameters"` - Parameter estimation
+- `"comprehensive_statistical_analysis"` - Full analysis
+
+**Setup (for LLM mode):**
+```bash
+# OpenAI (GPT-4, GPT-3.5)
+export OPENAI_API_KEY="your-key-here"
+pip install openai
+
+# OR Ollama (Local, free)
+# Install from https://ollama.ai
+ollama pull llama3
+pip install ollama
+```
+
+**Rule-Based Mode (No LLM needed):**
+```python
+# Works without API key using statistical heuristics
+agent = StatisticalAgent(use_llm=False, verbose=True)
+report = agent.analyze(data, goal="understand_distribution")
+```
+
+See [Agent Architecture](docs/AGENT_ARCHITECTURE.md) and [examples/agent_examples.py](examples/agent_examples.py) for details.
+
 ## Examples
 
 Complete working examples are available in the `examples/` directory:
 
+### Traditional Library Examples
 - **Task 1**: Negative Binomial distribution for meteorite counts
 - **Task 2**: Survival analysis with mixture models (owl hearing times)
 - **Task 3**: Method of Moments estimation for Gamma distribution
@@ -175,10 +286,21 @@ Complete working examples are available in the `examples/` directory:
 - **Task 5**: Polynomial regression with Ridge regularization
 - **Task 6**: Bayesian parameter estimation
 
+### Autonomous Agent Examples (NEW)
+- **Agent Demo**: Complete autonomous analysis examples
+  - Count data analysis
+  - Hypothesis testing
+  - Parameter estimation
+  - LLM-powered reasoning
+
 Run any example:
 
 ```bash
+# Traditional examples
 python examples/task1_negative_binomial_example.py
+
+# Agent examples
+python examples/agent_examples.py
 ```
 
 ## Documentation
@@ -195,8 +317,15 @@ statagent/
 │   └── bayesian.py
 ├── inference/             # Hypothesis testing
 │   └── hypothesis_tests.py
-└── regression/            # Regression models
-    └── polynomial.py
+├── regression/            # Regression models
+│   └── polynomial.py
+└── agent/                 # Autonomous agent (NEW)
+    ├── statistical_agent.py    # Main agent interface
+    ├── data_examiner.py        # Data profiling
+    ├── reasoning_engine.py     # LLM-powered reasoning
+    ├── orchestrator.py         # Workflow execution
+    ├── interpreter.py          # Result interpretation
+    └── prompts.py              # LLM prompt templates
 ```
 
 ### API Reference
