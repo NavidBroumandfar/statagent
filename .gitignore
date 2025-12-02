@@ -59,3 +59,12 @@ site/
 # Assignment files (original)
 *.docx
 
+# Personal/private files (not for public repo)
+PUBLISHING_GUIDE.md
+PUBLISH_NOW.md
+PROJECT_STRUCTURE.txt
+PROJECT_SUMMARY.md
+PROJECT_COMPLETE.md
+USER_EXPERIENCE_DEMO.md
+my_analysis.py
+
