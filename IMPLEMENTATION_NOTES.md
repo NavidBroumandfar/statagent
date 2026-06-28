@@ -1,15 +1,21 @@
-# StatAgent Phase 2 - Implementation Notes
+# StatAgent Agent Prototype Implementation Notes
+
+These are historical implementation notes for the experimental agent layer.
+The public project positioning is intentionally more conservative than the
+initial prototype language below.
 
 ## Overview
 
-StatAgent has been extended with an autonomous agent layer that can examine data, reason about appropriate methods, execute analyses, and interpret results with minimal human intervention.
+StatAgent has been extended with a prototype agent layer that can examine data,
+select candidate methods, execute analyses, and interpret results in a compact
+report.
 
 ## Implementation Summary
 
 ### Core Components
 
 **1. StatisticalAgent** (`statagent/agent/statistical_agent.py`)
-- Main user interface for autonomous analysis
+- Main user interface for agent-assisted analysis
 - Orchestrates all agent components
 - Supports LLM-powered and rule-based modes
 - Provides comprehensive analysis reports
@@ -23,7 +29,7 @@ StatAgent has been extended with an autonomous agent layer that can examine data
 
 **3. ReasoningEngine** (`statagent/agent/reasoning_engine.py`)
 - LLM-powered decision making
-- Supports OpenAI (GPT-4, GPT-3.5) and Ollama
+- Supports optional OpenAI and Ollama integrations
 - Method selection with parameter estimation
 - Result interpretation in plain language
 - Graceful fallback to rule-based mode
@@ -126,7 +132,7 @@ All existing statagent tools are integrated:
 - PolynomialRegression
 
 ### LLM Integration
-- OpenAI API (GPT-4, GPT-3.5-Turbo)
+- Optional OpenAI-compatible chat models
 - Ollama (local LLMs - llama3, mistral, etc.)
 - Rule-based fallback (no LLM required)
 
@@ -147,18 +153,18 @@ All existing statagent tools are integrated:
 
 ### Examples and Tests
 - `examples/agent_examples.py` - Working examples
-- `test_agent.py` - Basic functionality test
+- `tests/` - Basic pytest coverage
 
 ### Modified Files
 - `statagent/__init__.py` - Added StatisticalAgent export
-- `requirements.txt` - Added OpenAI and Ollama dependencies
+- `setup.py` - Added optional LLM extras
 - `README.md` - Added agent documentation
 
 ## Testing
 
 Run the basic test:
 ```bash
-python test_agent.py
+pytest
 ```
 
 Run examples:
@@ -171,14 +177,14 @@ python examples/agent_examples.py
 ### Option 1: OpenAI
 ```bash
 export OPENAI_API_KEY="your-key-here"
-pip install openai
+pip install -e ".[llm]"
 ```
 
 ### Option 2: Ollama (Local)
 ```bash
 # Install from https://ollama.ai
 ollama pull llama3
-pip install ollama
+pip install -e ".[llm]"
 ```
 
 ### Option 3: Rule-Based (No LLM)
@@ -208,8 +214,8 @@ No setup required. Agent uses statistical heuristics.
 - Total: Approximately 3-5 LLM calls per analysis
 
 ### Cost Estimates (OpenAI)
-- GPT-4: $0.03 - $0.10 per analysis
-- GPT-3.5-Turbo: $0.001 - $0.01 per analysis
+Costs depend on the selected model, provider pricing, prompt size, and number of
+reasoning calls per analysis.
 - Ollama: Free (local compute)
 
 ## Security and Privacy
@@ -258,4 +264,3 @@ Potential Phase 3 features:
 ---
 
 Implementation completed - Phase 2, December 2024
-

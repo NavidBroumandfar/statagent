@@ -13,9 +13,16 @@ python task1_negative_binomial_example.py
 Make sure you have installed the package and dependencies:
 
 ```bash
-pip install -r ../requirements.txt
-pip install -e ..
+pip install -e ".[dev]"
 ```
+
+## Portfolio Demo
+
+```bash
+python examples/portfolio_demo.py
+```
+
+Runs a deterministic rule-based agent demo without an API key.
 
 ## Example Files
 
@@ -108,4 +115,3 @@ nb.plot_pmf(
 ## Interactive Notebooks
 
 For interactive exploration, Jupyter notebook versions are available in the project root.
-

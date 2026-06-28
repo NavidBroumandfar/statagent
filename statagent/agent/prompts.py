@@ -260,42 +260,39 @@ Provide a confidence assessment:
 Be honest about limitations.
 """
 
+
 def format_data_analysis_prompt(data_profile: dict, goal: str) -> str:
     """Format the data analysis prompt with actual data."""
     return DATA_ANALYSIS_PROMPT.format(
-        n=data_profile.get('n', 'N/A'),
-        data_type=data_profile.get('data_type', 'unknown'),
-        mean=data_profile.get('mean', 'N/A'),
-        median=data_profile.get('median', 'N/A'),
-        std=data_profile.get('std', 'N/A'),
-        variance=data_profile.get('variance', 'N/A'),
-        skewness=data_profile.get('skewness', 'N/A'),
-        kurtosis=data_profile.get('kurtosis', 'N/A'),
-        min_val=data_profile.get('min', 'N/A'),
-        max_val=data_profile.get('max', 'N/A'),
-        range_val=data_profile.get('range', 'N/A'),
-        has_zeros=data_profile.get('has_zeros', False),
-        has_negatives=data_profile.get('has_negatives', False),
-        unique_count=data_profile.get('unique_count', 'N/A'),
-        missing_count=data_profile.get('missing_count', 0),
-        additional_info=data_profile.get('additional_info', 'None'),
-        goal=goal
+        n=data_profile.get("n", "N/A"),
+        data_type=data_profile.get("data_type", "unknown"),
+        mean=data_profile.get("mean", "N/A"),
+        median=data_profile.get("median", "N/A"),
+        std=data_profile.get("std", "N/A"),
+        variance=data_profile.get("variance", "N/A"),
+        skewness=data_profile.get("skewness", "N/A"),
+        kurtosis=data_profile.get("kurtosis", "N/A"),
+        min_val=data_profile.get("min", "N/A"),
+        max_val=data_profile.get("max", "N/A"),
+        range_val=data_profile.get("range", "N/A"),
+        has_zeros=data_profile.get("has_zeros", False),
+        has_negatives=data_profile.get("has_negatives", False),
+        unique_count=data_profile.get("unique_count", "N/A"),
+        missing_count=data_profile.get("missing_count", 0),
+        additional_info=data_profile.get("additional_info", "None"),
+        goal=goal,
     )
+
 
 def format_method_selection_prompt(data_summary: str, goal: str) -> str:
     """Format the method selection prompt."""
-    return METHOD_SELECTION_PROMPT.format(
-        data_summary=data_summary,
-        goal=goal
-    )
+    return METHOD_SELECTION_PROMPT.format(data_summary=data_summary, goal=goal)
 
-def format_result_interpretation_prompt(method_name: str, parameters: dict, 
-                                       results: str, goal: str) -> str:
+
+def format_result_interpretation_prompt(
+    method_name: str, parameters: dict, results: str, goal: str
+) -> str:
     """Format the result interpretation prompt."""
     return RESULT_INTERPRETATION_PROMPT.format(
-        method_name=method_name,
-        parameters=parameters,
-        results=results,
-        goal=goal
+        method_name=method_name, parameters=parameters, results=results, goal=goal
     )
-

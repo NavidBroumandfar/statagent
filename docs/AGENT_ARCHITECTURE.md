@@ -1,12 +1,13 @@
-# StatAgent Phase 2: Agent Architecture
+# StatAgent Agent Prototype Architecture
 
 ## Overview
 
-StatAgent Phase 2 introduces an **autonomous agent layer** that transforms StatAgent from a traditional statistical library into an intelligent system capable of:
+StatAgent includes an experimental agent layer on top of the statistical
+library. It demonstrates a simple pipeline that can:
 
 1. **Examining data** automatically
 2. **Reasoning** about appropriate methods
-3. **Executing** analyses autonomously
+3. **Executing** selected analyses
 4. **Interpreting** results in plain language
 5. **Recommending** next steps
 
@@ -78,7 +79,7 @@ Performs comprehensive statistical profiling **without** requiring LLM calls.
 Uses LLMs to reason about data and make intelligent method selections.
 
 **Supported LLMs**:
-- **OpenAI**: GPT-4, GPT-3.5-Turbo (requires API key)
+- **OpenAI**: optional OpenAI-compatible chat models (requires API key)
 - **Ollama**: Local LLMs (llama3, mistral, etc.)
 
 **Key Functions**:
@@ -353,8 +354,7 @@ custom_prompt = DATA_ANALYSIS_PROMPT + "\nAdditional instruction..."
 4. Adjust temperature for speed vs quality
 
 ### Costs (Approximate)
-- GPT-4: $0.03 - $0.10 per analysis
-- GPT-3.5-Turbo: $0.001 - $0.01 per analysis
+- Cost depends on the selected provider, model, and prompt size.
 - Ollama: Free (local compute)
 
 ## Security & Privacy
@@ -424,11 +424,10 @@ agent = StatisticalAgent(use_llm=False)
 ## References
 
 - StatAgent Core: `docs/API_REFERENCE.md`
-- Examples: `examples/agent_autonomous_analysis.py`
+- Examples: `examples/agent_examples.py`, `examples/portfolio_demo.py`
 - Prompt Engineering: `statagent/agent/prompts.py`
 - Contributing: `docs/CONTRIBUTING.md`
 
 ---
 
 **Built with autonomy, transparency, and statistical rigor.**
-

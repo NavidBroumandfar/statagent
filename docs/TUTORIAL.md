@@ -6,7 +6,7 @@ A step-by-step guide to using StatAgent for statistical analysis.
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/statagent.git
+git clone https://github.com/NavidBroumandfar/statagent.git
 cd statagent
 
 # Install in development mode
@@ -315,4 +315,3 @@ model.fit(X, y_log)
 ---
 
 Happy analyzing! 📊
-

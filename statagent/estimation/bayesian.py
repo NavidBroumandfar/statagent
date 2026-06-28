@@ -5,33 +5,32 @@ This module implements Bayesian estimation with conjugate priors,
 particularly for Gamma-Exponential models.
 """
 
-import numpy as np
-from typing import Dict, Optional
+from typing import Dict
 
 
 class BayesianEstimator:
     """
     Bayesian parameter estimator with Gamma prior.
-    
+
     For exponential likelihood with Gamma prior:
     - Prior: theta ~ Gamma(alpha_0, beta_0)
     - Likelihood: X_i ~ Exp(theta)
     - Posterior: theta | data ~ Gamma(alpha_post, beta_post)
-    
+
     Parameters
     ----------
     alpha_prior : float
         Prior shape parameter
     beta_prior : float
         Prior rate parameter
-    
+
     Attributes
     ----------
     alpha_prior : float
         Prior shape parameter
     beta_prior : float
         Prior rate parameter
-    
+
     Examples
     --------
     >>> estimator = BayesianEstimator(alpha_prior=48, beta_prior=92)
@@ -40,31 +39,28 @@ class BayesianEstimator:
     ... )
     >>> print(f"Posterior mean: {result['bayes_estimate']:.4f}")
     """
-    
+
     def __init__(self, alpha_prior: float, beta_prior: float):
         """Initialize the Bayesian estimator."""
         if alpha_prior <= 0 or beta_prior <= 0:
             raise ValueError("Prior parameters must be positive")
-        
+
         self.alpha_prior = alpha_prior
         self.beta_prior = beta_prior
-    
+
     def update_gamma_exponential(
-        self,
-        sample_mean: float,
-        n: int,
-        k: float = 1
+        self, sample_mean: float, n: int, k: float = 1
     ) -> Dict[str, float]:
         """
         Update Gamma prior with exponential/Gamma likelihood.
-        
+
         For k=1, this is standard exponential likelihood.
         For general k, this handles Gamma(k, theta) likelihood.
-        
+
         Posterior parameters:
         - alpha_post = alpha_prior + k * n
         - beta_post = beta_prior + n * sample_mean
-        
+
         Parameters
         ----------
         sample_mean : float
@@ -73,7 +69,7 @@ class BayesianEstimator:
             Sample size
         k : float, optional
             Shape parameter (default: 1 for exponential)
-            
+
         Returns
         -------
         result : dict
@@ -90,53 +86,50 @@ class BayesianEstimator:
             raise ValueError("Sample mean must be positive")
         if k <= 0:
             raise ValueError("Shape parameter k must be positive")
-        
+
         # Posterior parameters
         alpha_post = self.alpha_prior + k * n
         beta_post = self.beta_prior + n * sample_mean
-        
+
         # Point estimates
         bayes_estimate = alpha_post / beta_post  # Posterior mean
-        map_estimate = (alpha_post - 1) / beta_post  # Posterior mode
+        map_estimate = max(0.0, (alpha_post - 1) / beta_post)  # Posterior mode
         mle_estimate = k / sample_mean  # MLE from likelihood only
-        
+
         return {
             "alpha_post": float(alpha_post),
             "beta_post": float(beta_post),
             "bayes_estimate": float(bayes_estimate),
             "map_estimate": float(map_estimate),
-            "mle_estimate": float(mle_estimate)
+            "mle_estimate": float(mle_estimate),
         }
-    
+
     def posterior_variance(self, alpha_post: float, beta_post: float) -> float:
         """
         Compute posterior variance.
-        
+
         For Gamma(alpha, beta), Var(theta) = alpha / beta^2
-        
+
         Parameters
         ----------
         alpha_post : float
             Posterior shape parameter
         beta_post : float
             Posterior rate parameter
-            
+
         Returns
         -------
         variance : float
             Posterior variance
         """
-        return alpha_post / (beta_post ** 2)
-    
+        return alpha_post / (beta_post**2)
+
     def credible_interval(
-        self,
-        alpha_post: float,
-        beta_post: float,
-        confidence: float = 0.95
+        self, alpha_post: float, beta_post: float, confidence: float = 0.95
     ) -> tuple:
         """
         Compute Bayesian credible interval.
-        
+
         Parameters
         ----------
         alpha_post : float
@@ -145,30 +138,31 @@ class BayesianEstimator:
             Posterior rate parameter
         confidence : float, optional
             Confidence level (default: 0.95)
-            
+
         Returns
         -------
         interval : tuple
             (lower, upper) bounds of credible interval
         """
         from scipy.stats import gamma
-        
+
+        if alpha_post <= 0 or beta_post <= 0:
+            raise ValueError("Posterior parameters must be positive")
+        if not 0 < confidence < 1:
+            raise ValueError("confidence must be between 0 and 1")
+
         alpha_tail = (1 - confidence) / 2
-        lower = gamma.ppf(alpha_tail, alpha_post, scale=1/beta_post)
-        upper = gamma.ppf(1 - alpha_tail, alpha_post, scale=1/beta_post)
-        
+        lower = gamma.ppf(alpha_tail, alpha_post, scale=1 / beta_post)
+        upper = gamma.ppf(1 - alpha_tail, alpha_post, scale=1 / beta_post)
+
         return (lower, upper)
-    
+
     def summary(
-        self,
-        sample_mean: float,
-        n: int,
-        k: float = 1,
-        show_interval: bool = True
+        self, sample_mean: float, n: int, k: float = 1, show_interval: bool = True
     ) -> str:
         """
         Generate a summary of Bayesian estimation.
-        
+
         Parameters
         ----------
         sample_mean : float
@@ -179,7 +173,7 @@ class BayesianEstimator:
             Shape parameter
         show_interval : bool, optional
             Whether to show credible interval
-            
+
         Returns
         -------
         summary : str
@@ -187,7 +181,7 @@ class BayesianEstimator:
         """
         result = self.update_gamma_exponential(sample_mean, n, k)
         var = self.posterior_variance(result["alpha_post"], result["beta_post"])
-        
+
         summary = f"""
 Bayesian Estimation (Gamma Prior)
 ==================================
@@ -212,15 +206,11 @@ Point Estimates:
   MAP estimate (mode): {result['map_estimate']:.6f}
   MLE estimate: {result['mle_estimate']:.6f}
 """
-        
+
         if show_interval:
-            interval = self.credible_interval(
-                result["alpha_post"],
-                result["beta_post"]
-            )
+            interval = self.credible_interval(result["alpha_post"], result["beta_post"])
             summary += f"""
 95% Credible Interval: [{interval[0]:.6f}, {interval[1]:.6f}]
 """
-        
-        return summary
 
+        return summary

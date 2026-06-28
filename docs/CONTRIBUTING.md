@@ -56,7 +56,7 @@ Create an issue with:
 
 ```bash
 # Clone your fork
-git clone https://github.com/yourusername/statagent.git
+git clone https://github.com/NavidBroumandfar/statagent.git
 cd statagent
 
 # Create virtual environment
@@ -73,7 +73,7 @@ pytest tests/
 black statagent/
 
 # Lint code
-flake8 statagent/
+flake8 statagent/ tests/ examples/portfolio_demo.py examples/agent_examples.py setup.py
 ```
 
 ## Coding Standards
@@ -298,4 +298,3 @@ Feel free to:
 - Join our community discussions
 
 Thank you for contributing! 🎉
-

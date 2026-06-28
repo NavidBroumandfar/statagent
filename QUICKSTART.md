@@ -6,8 +6,9 @@ Get started with StatAgent in 5 minutes.
 
 ```bash
 cd statagent
-pip install -r requirements.txt
-pip install -e .
+python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
 ```
 
 ## Your First Analysis
@@ -57,6 +58,7 @@ cd examples
 python task1_negative_binomial_example.py
 python task4_hypothesis_testing_example.py
 python task6_bayesian_estimation_example.py
+python portfolio_demo.py
 ```
 
 ## Use CLI
@@ -127,4 +129,3 @@ model.plot_fit(X, y)
 - **Questions**: GitHub Discussions
 
 Happy analyzing!
-

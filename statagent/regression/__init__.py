@@ -3,4 +3,3 @@
 from statagent.regression.polynomial import PolynomialRegression
 
 __all__ = ["PolynomialRegression"]
-
